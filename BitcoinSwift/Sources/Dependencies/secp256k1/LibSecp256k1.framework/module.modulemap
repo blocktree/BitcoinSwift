@@ -1,0 +1,9 @@
+framework module Secp256k1  {
+    
+    //不知道为啥，module里使用相对路径时，头部文件的路径一定要有创建Headers文件夹，把头文件放在下面。
+    //如果没有Headers文件只能用绝对路径:/Users/.../BitcoinSwift/BitcoinSwift/Sources/Dependencies/secp256k1/include/secp256k1.h
+    header "../Headers/secp256k1.h"
+    header "../Headers/secp256k1_recovery.h"
+
+    export *
+}
