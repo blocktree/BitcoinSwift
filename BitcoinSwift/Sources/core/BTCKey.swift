@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Secp256k1
+import Libsecp256k1
 
 class BTCKey {
     
