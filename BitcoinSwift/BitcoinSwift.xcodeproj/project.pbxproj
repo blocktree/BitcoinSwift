@@ -7,12 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C5294DB51E98BF6F00160E3E /* BitcoinSwiftIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5294DAB1E98BF6F00160E3E /* BitcoinSwiftIOS.framework */; };
-		C5294DBA1E98BF6F00160E3E /* BitcoinSwiftIOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5294DB91E98BF6F00160E3E /* BitcoinSwiftIOSTests.swift */; };
+		C5294DB51E98BF6F00160E3E /* BitcoinSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5294DAB1E98BF6F00160E3E /* BitcoinSwift.framework */; };
 		C5294DBC1E98BF6F00160E3E /* BitcoinSwiftIOS.h in Headers */ = {isa = PBXBuildFile; fileRef = C5294DAE1E98BF6F00160E3E /* BitcoinSwiftIOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C5294E831E98C96C00160E3E /* BTCKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5294E821E98C96C00160E3E /* BTCKey.swift */; };
-		C55AB06C1E9A2A6600E71165 /* BitcoinSwiftOSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C55AB0631E9A2A6600E71165 /* BitcoinSwiftOSX.framework */; };
-		C55AB0711E9A2A6600E71165 /* BitcoinSwiftOSXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C55AB0701E9A2A6600E71165 /* BitcoinSwiftOSXTests.swift */; };
+		C553C9771E9C75CE00EDD787 /* LibSecp256k1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5E8516E1E9C748800E041AE /* LibSecp256k1.framework */; };
+		C553C9811E9CBDC700EDD787 /* BitcoinSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C553C97A1E9CBD3000EDD787 /* BitcoinSwiftTests.swift */; };
+		C553C9821E9CBDC700EDD787 /* BitcoinSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C553C97A1E9CBD3000EDD787 /* BitcoinSwiftTests.swift */; };
+		C55AB06C1E9A2A6600E71165 /* BitcoinSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C55AB0631E9A2A6600E71165 /* BitcoinSwift.framework */; };
 		C55AB0731E9A2A6600E71165 /* BitcoinSwiftOSX.h in Headers */ = {isa = PBXBuildFile; fileRef = C55AB0651E9A2A6600E71165 /* BitcoinSwiftOSX.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C55AB07B1E9A2A8C00E71165 /* BTCKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5294E821E98C96C00160E3E /* BTCKey.swift */; };
 		C5E8516F1E9C748800E041AE /* LibSecp256k1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5E8516E1E9C748800E041AE /* LibSecp256k1.framework */; };
@@ -36,19 +37,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		C5294DAB1E98BF6F00160E3E /* BitcoinSwiftIOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BitcoinSwiftIOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C5294DAB1E98BF6F00160E3E /* BitcoinSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BitcoinSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5294DAE1E98BF6F00160E3E /* BitcoinSwiftIOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BitcoinSwiftIOS.h; sourceTree = "<group>"; };
 		C5294DAF1E98BF6F00160E3E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C5294DB41E98BF6F00160E3E /* BitcoinSwiftIOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BitcoinSwiftIOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C5294DB91E98BF6F00160E3E /* BitcoinSwiftIOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitcoinSwiftIOSTests.swift; sourceTree = "<group>"; };
-		C5294DBB1E98BF6F00160E3E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C5294E821E98C96C00160E3E /* BTCKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BTCKey.swift; path = Sources/core/BTCKey.swift; sourceTree = "<group>"; };
-		C55AB0631E9A2A6600E71165 /* BitcoinSwiftOSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BitcoinSwiftOSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C553C97A1E9CBD3000EDD787 /* BitcoinSwiftTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitcoinSwiftTests.swift; sourceTree = "<group>"; };
+		C553C97C1E9CBD3000EDD787 /* IOS-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "IOS-Info.plist"; sourceTree = "<group>"; };
+		C553C97D1E9CBD3000EDD787 /* OSX-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "OSX-Info.plist"; sourceTree = "<group>"; };
+		C55AB0631E9A2A6600E71165 /* BitcoinSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BitcoinSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C55AB0651E9A2A6600E71165 /* BitcoinSwiftOSX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BitcoinSwiftOSX.h; sourceTree = "<group>"; };
 		C55AB0661E9A2A6600E71165 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C55AB06B1E9A2A6600E71165 /* BitcoinSwiftOSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BitcoinSwiftOSXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C55AB0701E9A2A6600E71165 /* BitcoinSwiftOSXTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitcoinSwiftOSXTests.swift; sourceTree = "<group>"; };
-		C55AB0721E9A2A6600E71165 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C5E8516E1E9C748800E041AE /* LibSecp256k1.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LibSecp256k1.framework; path = Frameworks/LibSecp256k1.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -65,7 +65,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C5294DB51E98BF6F00160E3E /* BitcoinSwiftIOS.framework in Frameworks */,
+				C5294DB51E98BF6F00160E3E /* BitcoinSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -73,6 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C553C9771E9C75CE00EDD787 /* LibSecp256k1.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,7 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C55AB06C1E9A2A6600E71165 /* BitcoinSwiftOSX.framework in Frameworks */,
+				C55AB06C1E9A2A6600E71165 /* BitcoinSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,9 +94,8 @@
 				C5E8516C1E9C71A600E041AE /* Frameworks */,
 				C5294DA51E98BEF500160E3E /* Sources */,
 				C5294DAD1E98BF6F00160E3E /* BitcoinSwiftIOS */,
-				C5294DB81E98BF6F00160E3E /* BitcoinSwiftIOSTests */,
 				C55AB0641E9A2A6600E71165 /* BitcoinSwiftOSX */,
-				C55AB06F1E9A2A6600E71165 /* BitcoinSwiftOSXTests */,
+				C553C9791E9CBD3000EDD787 /* BitcoinSwiftTests */,
 				C5294DAC1E98BF6F00160E3E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -111,9 +111,9 @@
 		C5294DAC1E98BF6F00160E3E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C5294DAB1E98BF6F00160E3E /* BitcoinSwiftIOS.framework */,
+				C5294DAB1E98BF6F00160E3E /* BitcoinSwift.framework */,
 				C5294DB41E98BF6F00160E3E /* BitcoinSwiftIOSTests.xctest */,
-				C55AB0631E9A2A6600E71165 /* BitcoinSwiftOSX.framework */,
+				C55AB0631E9A2A6600E71165 /* BitcoinSwift.framework */,
 				C55AB06B1E9A2A6600E71165 /* BitcoinSwiftOSXTests.xctest */,
 			);
 			name = Products;
@@ -128,21 +128,30 @@
 			path = BitcoinSwiftIOS;
 			sourceTree = "<group>";
 		};
-		C5294DB81E98BF6F00160E3E /* BitcoinSwiftIOSTests */ = {
-			isa = PBXGroup;
-			children = (
-				C5294DB91E98BF6F00160E3E /* BitcoinSwiftIOSTests.swift */,
-				C5294DBB1E98BF6F00160E3E /* Info.plist */,
-			);
-			path = BitcoinSwiftIOSTests;
-			sourceTree = "<group>";
-		};
 		C5294E811E98C91D00160E3E /* core */ = {
 			isa = PBXGroup;
 			children = (
 				C5294E821E98C96C00160E3E /* BTCKey.swift */,
 			);
 			name = core;
+			sourceTree = "<group>";
+		};
+		C553C9791E9CBD3000EDD787 /* BitcoinSwiftTests */ = {
+			isa = PBXGroup;
+			children = (
+				C553C97A1E9CBD3000EDD787 /* BitcoinSwiftTests.swift */,
+				C553C97B1E9CBD3000EDD787 /* Supporting Files */,
+			);
+			path = BitcoinSwiftTests;
+			sourceTree = "<group>";
+		};
+		C553C97B1E9CBD3000EDD787 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C553C97C1E9CBD3000EDD787 /* IOS-Info.plist */,
+				C553C97D1E9CBD3000EDD787 /* OSX-Info.plist */,
+			);
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		C55AB0641E9A2A6600E71165 /* BitcoinSwiftOSX */ = {
@@ -152,15 +161,6 @@
 				C55AB0661E9A2A6600E71165 /* Info.plist */,
 			);
 			path = BitcoinSwiftOSX;
-			sourceTree = "<group>";
-		};
-		C55AB06F1E9A2A6600E71165 /* BitcoinSwiftOSXTests */ = {
-			isa = PBXGroup;
-			children = (
-				C55AB0701E9A2A6600E71165 /* BitcoinSwiftOSXTests.swift */,
-				C55AB0721E9A2A6600E71165 /* Info.plist */,
-			);
-			path = BitcoinSwiftOSXTests;
 			sourceTree = "<group>";
 		};
 		C5E8516C1E9C71A600E041AE /* Frameworks */ = {
@@ -208,7 +208,7 @@
 			);
 			name = BitcoinSwiftIOS;
 			productName = BitcoinSwiftIOS;
-			productReference = C5294DAB1E98BF6F00160E3E /* BitcoinSwiftIOS.framework */;
+			productReference = C5294DAB1E98BF6F00160E3E /* BitcoinSwift.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		C5294DB31E98BF6F00160E3E /* BitcoinSwiftIOSTests */ = {
@@ -244,7 +244,7 @@
 			);
 			name = BitcoinSwiftOSX;
 			productName = BitcoinSwiftOSX;
-			productReference = C55AB0631E9A2A6600E71165 /* BitcoinSwiftOSX.framework */;
+			productReference = C55AB0631E9A2A6600E71165 /* BitcoinSwift.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		C55AB06A1E9A2A6600E71165 /* BitcoinSwiftOSXTests */ = {
@@ -361,7 +361,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C5294DBA1E98BF6F00160E3E /* BitcoinSwiftIOSTests.swift in Sources */,
+				C553C9811E9CBDC700EDD787 /* BitcoinSwiftTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -377,7 +377,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C55AB0711E9A2A6600E71165 /* BitcoinSwiftOSXTests.swift in Sources */,
+				C553C9821E9CBDC700EDD787 /* BitcoinSwiftTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -474,7 +474,6 @@
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Sources/Dependencies/secp256k1",
 					"$(PROJECT_DIR)/Frameworks",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -500,7 +499,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.chance.app.BitcoinSwiftIOS;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "$(PROJECT_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -552,7 +551,6 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Sources/Dependencies/secp256k1",
 					"$(PROJECT_DIR)/Frameworks",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -571,7 +569,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.chance.app.BitcoinSwiftIOS;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "$(PROJECT_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "";
@@ -629,7 +627,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = BitcoinSwiftIOSTests/Info.plist;
+				INFOPLIST_FILE = "BitcoinSwiftTests/Supporting Files/IOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -680,7 +678,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = BitcoinSwiftIOSTests/Info.plist;
+				INFOPLIST_FILE = "BitcoinSwiftTests/Supporting Files/IOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -727,7 +725,7 @@
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Sources/Dependencies/secp256k1",
+					"$(PROJECT_DIR)/Frameworks",
 				);
 				FRAMEWORK_VERSION = A;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -751,7 +749,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.chance.app.BitcoinSwiftOSX;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "$(PROJECT_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -797,7 +795,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Sources/Dependencies/secp256k1",
+					"$(PROJECT_DIR)/Frameworks",
 				);
 				FRAMEWORK_VERSION = A;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -814,7 +812,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.chance.app.BitcoinSwiftOSX;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "$(PROJECT_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "";
@@ -867,7 +865,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = BitcoinSwiftOSXTests/Info.plist;
+				INFOPLIST_FILE = "BitcoinSwiftTests/Supporting Files/OSX-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -917,7 +915,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = BitcoinSwiftOSXTests/Info.plist;
+				INFOPLIST_FILE = "BitcoinSwiftTests/Supporting Files/OSX-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;

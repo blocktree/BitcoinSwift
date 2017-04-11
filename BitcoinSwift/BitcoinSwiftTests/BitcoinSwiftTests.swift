@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import BitcoinSwiftIOS
+@testable import BitcoinSwift
 
 class BitcoinSwiftIOSTests: XCTestCase {
     
