@@ -21,9 +21,18 @@ class BitcoinSwiftIOSTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        let key = BTCKey()
-        _ = key.wif
+    
+    /// 测试创建钥匙对
+    func testCreateKeys() {
+        print("//////////////////// 测试开始 ////////////////////")
+        do {
+            let key = try BTCKey()
+            print(key.privateKey)
+        } catch {
+            
+        }
+        
+        print("//////////////////// 测试结束 ////////////////////")
     }
     
     func testPerformanceExample() {
