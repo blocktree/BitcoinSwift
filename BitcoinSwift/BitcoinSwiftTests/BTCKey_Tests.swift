@@ -9,7 +9,7 @@
 import XCTest
 @testable import BitcoinSwift
 
-class BitcoinSwiftIOSTests: XCTestCase {
+class BTCKey_Tests: XCTestCase {
     
     override func setUp() {
         super.setUp()
@@ -27,7 +27,15 @@ class BitcoinSwiftIOSTests: XCTestCase {
         print("//////////////////// 测试开始 ////////////////////")
         do {
             let key = try BTCKey()
-            print(key.privateKey)
+            print("随机私钥 wif = " + key.wif)
+            let hex = "c4bbcb1fbec99d65bf59d85c8cb62ee2db963f0fe106f483d9afa73bd4e39a8a"
+            guard let privatekey = hex.hexData else {
+                XCTAssert(false)
+                return
+            }
+            
+            let key2 = try BTCKey(privateKey: privatekey)
+            XCTAssert("5KJvsngHeMpm884wtkJNzQGaCErckhHJBGFsvd3VyK5qMZXj3hS" == key2.wif, "wif == \(key2.wif)")
         } catch {
             
         }

@@ -6,6 +6,11 @@
 //
 //
 
+#if os(Linux) || os(Android) || os(FreeBSD)
+    import Glibc
+#else
+    import Darwin
+#endif
 import Foundation
 
 
@@ -29,6 +34,14 @@ public extension Data {
     public var u8: [UInt8] {
         let array = [UInt8](self)
         return array
+    }
+    
+    public var base58: String {
+        if self.isEmpty {
+            return ""
+        }
+        
+        return BTCBase58.encode(with: self)
     }
     
     /// 指针变量转为swift数组结构

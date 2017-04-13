@@ -20,12 +20,28 @@ public class BTCKey {
     
     
     /// 是否压缩公钥
-    public var publicKeyCompressed: Bool = true
+    public var publicKeyCompressed: Bool = false
     
     
     ///WIF格式编码私钥（钱包导入格式——WIF，Wallet Import Format），如果key不是私钥则返回空串
     public var wif: String {
-        return ""
+        guard let key = self.seckey else {
+            return ""
+        }
+        
+        var d = Data(capacity: 34)
+        let version: UInt8 = 128
+        d.append(version)
+        d.append(key)
+        if self.publicKeyCompressed {
+            d.append(0x01)
+        }
+        
+        let checksum = d.sha256().sha256()
+        d.append(checksum.bytes, count: 4)
+        
+        
+        return d.base58
     }
     
     
@@ -54,7 +70,6 @@ public class BTCKey {
     public convenience init() throws {
         //随机创建256位私钥，则长度32字节
         let buffer = Data.randomBytes(32)
-        print(buffer)
         try self.init(privateKey: buffer)
     }
     
@@ -64,7 +79,7 @@ public class BTCKey {
     /// - Parameter privateKey: 私钥字节
     public init(privateKey: Data) throws {
         guard self.setPrivateKey(key: privateKey) else {
-            throw BitcoinSwiftError.initError
+            throw BTCError.initError
         }
     }
     

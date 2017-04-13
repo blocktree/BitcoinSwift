@@ -6,7 +6,7 @@
 //
 //
 
-enum BitcoinSwiftError: Error {
+enum BTCError: Error {
     case initError
 }
 
