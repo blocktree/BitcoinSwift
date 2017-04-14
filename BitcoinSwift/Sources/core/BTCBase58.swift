@@ -9,7 +9,8 @@
 import Foundation
 
 // MARK: - base58编码解码
-class BTCBase58 {
+//资料参考：https://zh.wikipedia.org/wiki/Base58
+public class BTCBase58 {
     
     /// base58字母表
     public static var base58chars: [Character] {
@@ -38,40 +39,45 @@ class BTCBase58 {
             z += 1
         }
         
-        //全部为0，则返回空串
-        if z == data.count {
-            return ""
-        }
-        
-        // Expected size increase from base58 conversion is approximately 137%
-        // use 138% to be safe
-        var buf: [UInt8] = [UInt8](repeating: 0, count: (dbytes.count - z) * 138 / 100 + 1)
-        
-        for i in z...dbytes.count - 1 {
-            var carry: UInt32 = UInt32(dbytes[i])
-            for j in stride(from: buf.count, to: 0, by: -1) {
-                carry += UInt32(buf[j - 1]) << 8    //左移8位，并把低8位相加合并，得到32位
-                buf[j - 1] = UInt8(carry % 58)             //约简求余
-                carry /= 58
-            }
-            
-            carry = 0   //重置全部0位
-        }
-        
-        var k: Int = 0
-        //计算开头连续0字节数
-        while k < buf.count && buf[k] == 0 {
-            k += 1
-        }
-        
-        //把开头的0位都填充base58字母0位字母
+        //输出结果，先把开头的0位都填充base58字母0位字母
         var s = String([Character](repeating: BTCBase58.base58chars[0], count: z))
         
-        //剔除开头的0位，编码字母到输出字串中
-        for i in k...buf.count - 1 {
-            s.append(BTCBase58.base58chars[Int(buf[i])])
+        //处理连续0后的剩余部分
+        if z < data.count {
+            
+            
+            // Expected size increase from base58 conversion is approximately 137%
+            // use 138% to be safe，保证足够的空间方编码后的值，后面会删除开头多出的0
+            //log(256)/log(58) = 8 / 5.85798 ≈ 1.37
+            var buf: [UInt8] = [UInt8](repeating: 0, count: (dbytes.count - z) * 138 / 100 + 1)
+            
+            for i in z...dbytes.count - 1 {
+                var carry: UInt32 = UInt32(dbytes[i])
+                
+                //j = buf.count; j > 0; j--
+                for j in stride(from: buf.count, to: 0, by: -1) {
+                    carry += UInt32(buf[j - 1]) << 8    //左移8位，并把低8位相加合并，得到32位
+                    buf[j - 1] = UInt8(carry % 58)      //约简求余，填出
+                    carry /= 58                         //倍数向前进位，相加
+                }
+                
+                carry = 0   //重置全部0位
+            }
+            
+            var k: Int = 0
+            //计算开头连续0字节数
+            while k < buf.count && buf[k] == 0 {
+                k += 1
+            }
+            
+            //剔除开头的0位，把实际编码后的字母放出输出字串中
+            for i in k...buf.count - 1 {
+                s.append(BTCBase58.base58chars[Int(buf[i])])
+            }
+            buf.removeAll()
+            
         }
-        buf.removeAll()
+        
         return s
     }
     
@@ -81,7 +87,7 @@ class BTCBase58 {
     /// - Parameter string: base58格式字符串
     /// - Returns: 解码后的字节
     public static func decode(with string: String) -> Data? {
-    
+        
         //空字节返回空串
         if string.isEmpty {
             return nil
@@ -95,35 +101,43 @@ class BTCBase58 {
             z += 1
         }
         
-        // log(58)/log(256), rounded up
-        var buf: [UInt8] = [UInt8](repeating: 0, count: (string.length - z) * 733 / 1000 + 1)
+        var d = Data()  //输出字节
+        d.append(contentsOf: [UInt8](repeating: 0, count: z))   //填充开头连续的0
         
-        for i in z...characters.count - 1 {
-            guard let cindex = BTCBase58.base58chars.index(of: characters[i]) else {
-                return nil  //字母表找不，不是base58编码
+        if z < string.length {
+            
+            // log(58)/log(256), rounded up
+            var buf: [UInt8] = [UInt8](repeating: 0, count: (string.length - z) * 733 / 1000 + 1)
+            
+            for i in z...characters.count - 1 {
+                guard let cindex = BTCBase58.base58chars.index(of: characters[i]) else {
+                    return nil  //字母表找不，不是base58编码
+                }
+                
+                var carry: UInt32 = UInt32(cindex)
+                
+                ////j = buf.count; j > 0; j--
+                for j in stride(from: buf.count, to: 0, by: -1) {
+                    carry = carry + UInt32(buf[j - 1]) * 58
+                    buf[j - 1] = UInt8(carry & 0xff)
+                    carry >>= 8
+                }
+                
+                carry = 0
             }
             
-            var carry: UInt32 = UInt32(cindex)
-            
-            for j in stride(from: buf.count, to: 0, by: -1) {
-                carry = carry + UInt32(buf[j - 1]) * 58
-                buf[j - 1] = UInt8(carry & 0xff)
-                carry >>= 8
+            var k: Int = 0
+            //计算开头连续0字节数
+            while k < buf.count && buf[k] == 0 {
+                k += 1
             }
             
-            carry = 0
-        }
-  
-        var k: Int = 0
-        //计算开头连续0字节数
-        while k < buf.count && buf[k] == 0 {
-            k += 1
+            
+            d.append(contentsOf: buf)       //填充数据赋值
+            buf.removeAll()
+            
         }
         
-        var d = Data()
-        d.append(contentsOf: [UInt8](repeating: 0, count: z))
-        d.append(contentsOf: buf)
-        buf.removeAll()
         return d
     }
     

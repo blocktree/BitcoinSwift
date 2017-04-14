@@ -59,6 +59,16 @@ extension String {
         return d
     }
     
+    
+    /// base58的编码数据
+    public var base58: Data? {
+        if self.isEmpty {
+            return nil
+        }
+        
+        return BTCBase58.decode(with: self)
+    }
+    
 }
 
 

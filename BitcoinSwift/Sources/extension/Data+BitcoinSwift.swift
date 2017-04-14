@@ -44,6 +44,27 @@ public extension Data {
         return BTCBase58.encode(with: self)
     }
     
+    
+    /// 添加完整性校验
+    ///
+    /// - Parameter length: 用于校验完整性的长度，默认4字节
+    public mutating func addChecksum(length: Int = 4) {
+        if self.isEmpty {
+            return
+        }
+        
+        //添加4字节hash数据到最后位，用于校验地址完整性
+        let checksum = self.sha256().sha256()   //两次hash256
+        self.append(checksum.bytes, count: 4)
+
+    }
+    
+}
+
+
+// MARK: - 全局方法
+public extension Data {
+    
     /// 指针变量转为swift数组结构
     ///
     /// - Parameters:
