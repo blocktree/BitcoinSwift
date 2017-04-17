@@ -69,7 +69,7 @@ class BTCBase58_Tests: XCTestCase {
         
         print("input = \(base58)")
         print("output = \(d.hex)")
-        XCTAssert(d.hex == "0080c4bbcb1fbec99d65bf59d85c8cb62ee2db963f0fe106f483d9afa73bd4e39a8aeb5f56e1")
+        XCTAssert(d.hex == "80c4bbcb1fbec99d65bf59d85c8cb62ee2db963f0fe106f483d9afa73bd4e39a8aeb5f56e1")
         
         //测试全为0
         base58 = "11111111111111111111"

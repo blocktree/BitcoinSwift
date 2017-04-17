@@ -50,13 +50,11 @@ class BTCKey_Tests: XCTestCase {
         XCTAssert("5KJvsngHeMpm884wtkJNzQGaCErckhHJBGFsvd3VyK5qMZXj3hS" == key2.wif, "wif == \(key2.wif)")
         
         //导出公钥
-        guard let pubkey = key2.publicKey else {
-            XCTAssert(false)
-            return
-        }
+        let pubkey = key2.publicKey
         
         print("输出公钥 = \(pubkey.hex)")
-        
+
+        print("输出公钥地址 = \(key2.address!.string)")
     }
     
 }

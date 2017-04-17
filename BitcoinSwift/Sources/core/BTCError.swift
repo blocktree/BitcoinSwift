@@ -7,6 +7,14 @@
 //
 
 enum BTCError: Error {
-    case initError
+    
+    case initError(String)
+    
+    var reason: String {
+        switch self {
+        case let .initError(reason):
+            return reason
+        }
+    }
 }
 

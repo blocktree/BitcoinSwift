@@ -82,7 +82,7 @@ extension BTCAddress {
             return
         }
         
-        let bytes = base58data.bytes
+        let bytes = base58data.u8
         let checksumLen = 4
         
         //检查最少长度
@@ -102,14 +102,15 @@ extension BTCAddress {
         let payload = Array(bytes.prefix(bytes.count - 4))
         let checksum = Array(bytes.suffix(4))
         
-        //检查地址是否符合规范的长度
-        if payload.count != self.length {
+        //检查地址是否符合规范的长度，version占1字节
+        if payload.count != self.length + 1 {
             self.clear()
             return
         }
         
         //检查地址完整性
-        if checksum != payload.sha256().sha256() {
+        let payloadhash4bytes = Array(payload.sha256().sha256().prefix(4))
+        if checksum != payloadhash4bytes {
             self.clear()
             return
         }
@@ -149,19 +150,19 @@ public struct BTCPublickeyAddress: BTCAddress {
     public var data: Data?
     
     /// 使用base58编码格式初始化地址
-    init?(string: String) {
+    init(string: String) throws {
         self.address(string: string)
         if self.data == nil {
-            return nil
+            throw BTCError.initError("data is nil")
         }
         
     }
     
     /// 使用字节流初始化地址
-    init?(data: Data) {
+    init(data: Data) throws {
         
         if data.isEmpty {
-            return nil
+            throw BTCError.initError("data is nil")
         }
         self.address(data: data)
     }
@@ -193,10 +194,10 @@ public struct BTCPrivateKeyAddress: BTCAddress {
     public var data: Data?
     
     /// 使用base58编码格式初始化地址
-    init?(string: String) {
+    init(string: String) throws {
         self.address(string: string)
         if self.data == nil {
-            return nil
+            throw BTCError.initError("data is nil")
         }
         
         //如果负载数据长度被标准长2字节，就是压缩格式(前序类型占1字节，后续压缩占1字节)
@@ -208,10 +209,10 @@ public struct BTCPrivateKeyAddress: BTCAddress {
     }
     
     /// 使用字节流初始化地址
-    init?(data: Data, compressed: Bool = false) {
+    init(data: Data, compressed: Bool = false) throws {
         
         if data.isEmpty {
-            return nil
+            throw BTCError.initError("data is nil")
         }
         
         self.address(data: data)

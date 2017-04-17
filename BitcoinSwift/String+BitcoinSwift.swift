@@ -69,6 +69,14 @@ extension String {
         return BTCBase58.decode(with: self)
     }
     
+    /// RIPEMD160哈希
+    ///
+    /// - Returns: 哈希后的摘要数据
+    public func ripemd160() -> String {
+        let data = Data(bytes: self.utf8.lazy.map({ $0 as UInt8 }))
+        return RIPEMD.digest(data).hex
+    }
+    
 }
 
 

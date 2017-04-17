@@ -132,8 +132,11 @@ public class BTCBase58 {
                 k += 1
             }
             
+            //剔除开头的0位，把实际编码后的字母放出输出字串中
+            for i in k...buf.count - 1 {
+                d.append(buf[i])    //填充数据赋值
+            }
             
-            d.append(contentsOf: buf)       //填充数据赋值
             buf.removeAll()
             
         }

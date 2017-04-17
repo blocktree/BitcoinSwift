@@ -18,7 +18,7 @@ import Foundation
 public extension Data {
     
     
-    /// 转为Hex
+    /// 转为Hex，已经在CryptoSwift实现了
     public var hex: String {
         return map { String(format: "%02hhx", $0) }.joined()
     }
@@ -30,12 +30,13 @@ public extension Data {
     }
     
     
-    /// 转为8位数组指针，字节数组
-    public var u8: [UInt8] {
-        let array = [UInt8](self)
-        return array
+    /// 转为8位数组指针，字节数组，已经在CryptoSwift实现了bytes
+    public var u8: Array<UInt8> {
+        return Array(self)
     }
     
+    
+    /// 字节base58编码
     public var base58: String {
         if self.isEmpty {
             return ""
@@ -57,6 +58,14 @@ public extension Data {
         let checksum = self.sha256().sha256()   //两次hash256
         self.append(checksum.bytes, count: 4)
 
+    }
+    
+    
+    /// RIPEMD160哈希
+    ///
+    /// - Returns: 哈希后的摘要数据
+    public func ripemd160() -> Data {
+        return RIPEMD.digest(self)
     }
     
 }

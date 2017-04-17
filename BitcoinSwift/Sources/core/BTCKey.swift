@@ -27,115 +27,11 @@ public class BTCKey {
     public var publicKeyCompressed: Bool = false
     
     
-    /// 公钥的实际长度
-    public var publicKeyLength: Int {
-        if self.publicKeyCompressed {
-            return BTCKey.compressedPublicKeyLength
-        } else {
-            return BTCKey.uncompressedPublicKeyLength
-        }
-    }
-    
-    
-    ///WIF格式编码私钥（钱包导入格式——WIF，Wallet Import Format），如果key不是私钥则返回空串
-    public var wif: String {
-        guard let key = self.seckey else {
-            return ""
-        }
-        
-        var d = Data(capacity: 34)
-        let version: UInt8 = 128
-        d.append(version)
-        d.append(key)
-        if self.publicKeyCompressed {
-            d.append(0x01)
-        }
-        
-        let checksum = d.sha256().sha256()
-        d.append(checksum.bytes, count: 4)
-        
-        
-        return d.base58
-    }
-    
-    
-    
-    /// 私钥字节
-    public var privateKey: Data? {
-        return self.seckey
-    }
-    
     /// 公钥字节
-    public var publicKey: Data? {
-        
-        guard let pubkeyData = self.pubkey else {
-            //如果没有公钥数据，尝试使用私钥导出一个
-            guard let privateKeyData = self.seckey else {
-                //没有私钥数据
-                return nil
-            }
-            
-            /********** 生成公钥 **********/
-            
-            //公钥长度根据是否压缩确定
-            var len = self.publicKeyLength
-            //输出目标，len个字节长度
-            var data = UnsafeMutablePointer<UInt8>.allocate(capacity: len)
-            //secp256k1公钥，1个指针变量
-            var pk = UnsafeMutablePointer<secp256k1_pubkey>.allocate(capacity: 1)
-            
-            //记得释放内存
-            defer {
-                pk.deinitialize(count: 1)
-                pk.deallocate(capacity: 1)
-                
-                data.deinitialize(count: len)
-                data.deallocate(capacity: len)
-            }
-            
-            
-            //创建公钥，结果1就代表成功
-            guard secp256k1_ec_pubkey_create(self.ctx, pk, privateKeyData.bytes) > 0 else {
-                return nil
-            }
-            
-            
-            //print(pk.pointee.data)
-            
-            let secp256k1_ec_compressed = self.publicKeyCompressed ? (SECP256K1_FLAGS_TYPE_COMPRESSION | SECP256K1_FLAGS_BIT_COMPRESSION) : SECP256K1_FLAGS_TYPE_COMPRESSION
-            
-            //导出公钥字节压缩，结果1就代表成功
-            guard secp256k1_ec_pubkey_serialize(self.ctx, data, &len, pk, UInt32(secp256k1_ec_compressed)) > 0 else {
-                return nil
-            }
-            
-            //检查长度是否符合
-            guard self.publicKeyLength == len else {
-                return nil
-            }
-            
-            //print("len = \(len)")
-            
-            self.pubkey = Data(bytes: data, count: len)
-            
-            return self.pubkey
-        }
-        
-        return pubkeyData
-        
-    }
-    
-    //MARK: - 私有变量
-    
-    
-    /// 私钥数据
-    fileprivate var seckey: Data?
-    
-    /// 公钥
-    fileprivate var pubkey: Data? {
+    public var publicKey: Data = Data() {
         didSet {
             //同时设置是否压缩
-            if pubkey?.count == BTCKey.compressedPublicKeyLength {
+            if self.publicKey.count == BTCKey.compressedPublicKeyLength {
                 self.publicKeyCompressed = true
             } else {
                 self.publicKeyCompressed = false
@@ -143,6 +39,11 @@ public class BTCKey {
         }
     }
     
+    //MARK: - 私有变量
+    
+    
+    /// 私钥数据
+    fileprivate var seckey: Data?
     
     /// 加密工具上下文指针，一个可以签名和验证的指针对象
     fileprivate var ctx: OpaquePointer = {
@@ -171,6 +72,9 @@ public class BTCKey {
         guard self.setPrivateKey(key: privateKey) else {
             return nil
         }
+        guard self.generatePublickey(privateKeyData: privateKey) else {
+            return nil
+        }
     }
     
     /// 使用公钥初始化对象
@@ -192,7 +96,7 @@ public class BTCKey {
     /// - Returns: 是否设置成功
     fileprivate func setPrivateKey(key: Data) -> Bool {
         //检查私钥字节是否符合256位
-        guard secp256k1_ec_seckey_verify(self.ctx, key.bytes) > 0 else {
+        guard secp256k1_ec_seckey_verify(self.ctx, key.u8) > 0 else {
             return false
         }
         self.seckey = key
@@ -221,16 +125,68 @@ public class BTCKey {
         
         
         /// 使用secp256k1校验公钥，成功pk会得到复制
-        let flag = secp256k1_ec_pubkey_parse(self.ctx, pk, key.bytes, key.count)
+        let flag = secp256k1_ec_pubkey_parse(self.ctx, pk, key.u8, key.count)
         
         if flag > 0 {
             
-            self.pubkey = key
+            self.publicKey = key
             
             return true
         } else {
             return false
         }
+    }
+    
+    
+    /// 生成公钥
+    ///
+    /// - Parameter privateKeyData: 私钥数据
+    fileprivate func generatePublickey(privateKeyData: Data) -> Bool {
+        
+        /********** 生成公钥 **********/
+        
+        //公钥长度根据是否压缩确定
+        var len = self.publicKeyLength
+        //输出目标，len个字节长度
+        var data = UnsafeMutablePointer<UInt8>.allocate(capacity: len)
+        //secp256k1公钥，1个指针变量
+        var pk = UnsafeMutablePointer<secp256k1_pubkey>.allocate(capacity: 1)
+        
+        //记得释放内存
+        defer {
+            pk.deinitialize(count: 1)
+            pk.deallocate(capacity: 1)
+            
+            data.deinitialize(count: len)
+            data.deallocate(capacity: len)
+        }
+        
+        
+        //创建公钥，结果1就代表成功
+        guard secp256k1_ec_pubkey_create(self.ctx, pk, privateKeyData.u8) > 0 else {
+            return false
+        }
+        
+        
+        //print(pk.pointee.data)
+        
+        let secp256k1_ec_compressed = self.publicKeyCompressed ? (SECP256K1_FLAGS_TYPE_COMPRESSION | SECP256K1_FLAGS_BIT_COMPRESSION) : SECP256K1_FLAGS_TYPE_COMPRESSION
+        
+        //导出公钥字节压缩，结果1就代表成功
+        guard secp256k1_ec_pubkey_serialize(self.ctx, data, &len, pk, UInt32(secp256k1_ec_compressed)) > 0 else {
+            return false
+        }
+        
+        //检查长度是否符合
+        guard self.publicKeyLength == len else {
+            return false
+        }
+        
+        //print("len = \(len)")
+        
+        self.publicKey = Data(bytes: data, count: len)
+        
+        return true
     }
     
 }
@@ -242,7 +198,56 @@ extension BTCKey {
     
     /// 清除内存，针对Secp256k1库使用的内存
     public func clear() {
+        self.seckey = nil
+        self.publicKeyCompressed = false
+    }
+    
+    
+    /// 公钥的实际长度
+    public var publicKeyLength: Int {
+        if self.publicKeyCompressed {
+            return BTCKey.compressedPublicKeyLength
+        } else {
+            return BTCKey.uncompressedPublicKeyLength
+        }
+    }
+    
+    
+    ///WIF格式编码私钥（钱包导入格式——WIF，Wallet Import Format），如果key不是私钥则返回空串
+    public var wif: String {
+        guard let key = self.seckey else {
+            return ""
+        }
         
+        var d = Data(capacity: 34)
+        let version: UInt8 = 128
+        d.append(version)
+        d.append(key)
+        if self.publicKeyCompressed {
+            d.append(0x01)
+        }
+        
+        let checksum = d.sha256().sha256()
+        d.append(checksum.u8, count: 4)
+        
+        
+        return d.base58
+    }
+    
+    
+    
+    /// 私钥字节
+    public var privateKey: Data? {
+        return self.seckey
+    }
+    
+    
+    
+    /// 地址，公钥的地址对象
+    public var address: BTCPublickeyAddress? {
+        let hash160 = self.publicKey.sha256().ripemd160()
+        let address = try! BTCPublickeyAddress(data: hash160)
+        return address
     }
     
 }
