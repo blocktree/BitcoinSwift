@@ -10,7 +10,7 @@ import Foundation
 
 // MARK: - base58编码解码
 //资料参考：https://zh.wikipedia.org/wiki/Base58
-public class BTCBase58 {
+public struct BTCBase58 {
     
     /// base58字母表
     public static var base58chars: [Character] {

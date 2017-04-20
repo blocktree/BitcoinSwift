@@ -52,4 +52,46 @@ class BTCAddress_Tests: XCTestCase {
         
         
     }
+    
+    
+    /// 测试私钥地址
+    func testPrivateKeyAddress() {
+        
+        //导入未压缩的私钥
+        var address = "5KJvsngHeMpm884wtkJNzQGaCErckhHJBGFsvd3VyK5qMZXj3hS"
+        guard let addr = try? BTCPrivateKeyAddress(string: address) else {
+            XCTAssert(false, "addr data isEmpty")
+            return
+        }
+        guard let privateKeyData = addr.data else {
+            XCTAssert(false, "addr data isEmpty")
+            return
+        }
+        
+        print("input = \(address)")
+        print("output = \(privateKeyData.hex)")
+        XCTAssert("c4bbcb1fbec99d65bf59d85c8cb62ee2db963f0fe106f483d9afa73bd4e39a8a" == privateKeyData.hex, "hex = \(privateKeyData.hex)");
+        
+        //导入压缩
+        let hex = "c4bbcb1fbec99d65bf59d85c8cb62ee2db963f0fe106f483d9afa73bd4e39a8a"
+        guard let address2 = try? BTCPrivateKeyAddress(data: hex.hexData!, compressed: true) else {
+            XCTAssert(false, "addr data isEmpty")
+            return
+        }
+        print("input = \(hex)")
+        print("output = \(address2.string)")
+        XCTAssert("L3p8oAcQTtuokSCRHQ7i4MhjWc9zornvpJLfmg62sYpLRJF9woSu" == address2.string, "address = \(address2.string)");
+        
+        //导入压缩地址base58
+        address = "L3p8oAcQTtuokSCRHQ7i4MhjWc9zornvpJLfmg62sYpLRJF9woSu"
+        guard let addr3 = try? BTCPrivateKeyAddress(string: address) else {
+            XCTAssert(false, "addr data isEmpty")
+            return
+        }
+        XCTAssert(addr3.compressed, "address compressed is false");
+        
+        print("input = \(address)")
+        print("output = \(addr3.data!.hex)")
+        XCTAssert("c4bbcb1fbec99d65bf59d85c8cb62ee2db963f0fe106f483d9afa73bd4e39a8a" == addr3.data!.hex, "hex = \(addr3.data!.hex)");
+    }
 }

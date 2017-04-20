@@ -97,10 +97,10 @@
 		C5BA99711EA4AF6500D1E548 /* RIPEMD_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5BA996F1EA4AF6500D1E548 /* RIPEMD_Tests.swift */; };
 		C5BA99731EA4C24E00D1E548 /* BTCAddress_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5BA99721EA4C24E00D1E548 /* BTCAddress_Tests.swift */; };
 		C5BA99741EA4C24E00D1E548 /* BTCAddress_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5BA99721EA4C24E00D1E548 /* BTCAddress_Tests.swift */; };
-		C5D5C36C1EA4A8D1002CEF7B /* RIPEMD+Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D5C3671EA4A8D1002CEF7B /* RIPEMD+Block.swift */; };
-		C5D5C36D1EA4A8D1002CEF7B /* RIPEMD+Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D5C3671EA4A8D1002CEF7B /* RIPEMD+Block.swift */; };
-		C5D5C36E1EA4A8D1002CEF7B /* RIPEMD.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D5C3681EA4A8D1002CEF7B /* RIPEMD.swift */; };
-		C5D5C36F1EA4A8D1002CEF7B /* RIPEMD.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D5C3681EA4A8D1002CEF7B /* RIPEMD.swift */; };
+		C5C2A9CE1EA76D3A0056D626 /* BTCProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C2A9CD1EA76D3A0056D626 /* BTCProtocol.swift */; };
+		C5C2A9CF1EA76D3A0056D626 /* BTCProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C2A9CD1EA76D3A0056D626 /* BTCProtocol.swift */; };
+		C5D4B29D1EA5A6C800163616 /* RIPEMD+Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D4B29B1EA5A6C800163616 /* RIPEMD+Block.swift */; };
+		C5D4B29E1EA5A6C800163616 /* RIPEMD.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D4B29C1EA5A6C800163616 /* RIPEMD.swift */; };
 		C5E8516F1E9C748800E041AE /* LibSecp256k1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5E8516E1E9C748800E041AE /* LibSecp256k1.framework */; };
 /* End PBXBuildFile section */
 
@@ -207,8 +207,9 @@
 		C55AB06B1E9A2A6600E71165 /* BitcoinSwiftOSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BitcoinSwiftOSXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5BA996F1EA4AF6500D1E548 /* RIPEMD_Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RIPEMD_Tests.swift; sourceTree = "<group>"; };
 		C5BA99721EA4C24E00D1E548 /* BTCAddress_Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BTCAddress_Tests.swift; sourceTree = "<group>"; };
-		C5D5C3671EA4A8D1002CEF7B /* RIPEMD+Block.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RIPEMD+Block.swift"; sourceTree = "<group>"; };
-		C5D5C3681EA4A8D1002CEF7B /* RIPEMD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RIPEMD.swift; sourceTree = "<group>"; };
+		C5C2A9CD1EA76D3A0056D626 /* BTCProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BTCProtocol.swift; path = Sources/core/BTCProtocol.swift; sourceTree = "<group>"; };
+		C5D4B29B1EA5A6C800163616 /* RIPEMD+Block.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RIPEMD+Block.swift"; sourceTree = "<group>"; };
+		C5D4B29C1EA5A6C800163616 /* RIPEMD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RIPEMD.swift; sourceTree = "<group>"; };
 		C5E8516E1E9C748800E041AE /* LibSecp256k1.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LibSecp256k1.framework; path = Frameworks/LibSecp256k1.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -358,7 +359,6 @@
 		C5294DA51E98BEF500160E3E /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				C5D5C3611EA47015002CEF7B /* crypto */,
 				C5477D5C1E9E044A009854FE /* 3rd */,
 				C553C9841E9CD56100EDD787 /* extension */,
 				C5294E811E98C91D00160E3E /* core */,
@@ -394,6 +394,7 @@
 				C5365CC61E9F6F8B002F15F3 /* BTCBase58.swift */,
 				C5365CCE1E9F7561002F15F3 /* BTCEnvConfig.swift */,
 				C5365CD11E9F773B002F15F3 /* BTCAddress.swift */,
+				C5C2A9CD1EA76D3A0056D626 /* BTCProtocol.swift */,
 			);
 			name = core;
 			sourceTree = "<group>";
@@ -401,6 +402,7 @@
 		C5477D5C1E9E044A009854FE /* 3rd */ = {
 			isa = PBXGroup;
 			children = (
+				C5D4B29A1EA5A6C800163616 /* ripemd */,
 				C50EC8991E9F698B00B7EF94 /* CryptoSwift */,
 			);
 			name = 3rd;
@@ -446,22 +448,13 @@
 			path = BitcoinSwiftOSX;
 			sourceTree = "<group>";
 		};
-		C5D5C3611EA47015002CEF7B /* crypto */ = {
+		C5D4B29A1EA5A6C800163616 /* ripemd */ = {
 			isa = PBXGroup;
 			children = (
-				C5D5C3651EA4A8D1002CEF7B /* ripemd */,
+				C5D4B29B1EA5A6C800163616 /* RIPEMD+Block.swift */,
+				C5D4B29C1EA5A6C800163616 /* RIPEMD.swift */,
 			);
-			name = crypto;
-			sourceTree = "<group>";
-		};
-		C5D5C3651EA4A8D1002CEF7B /* ripemd */ = {
-			isa = PBXGroup;
-			children = (
-				C5D5C3681EA4A8D1002CEF7B /* RIPEMD.swift */,
-				C5D5C3671EA4A8D1002CEF7B /* RIPEMD+Block.swift */,
-			);
-			name = ripemd;
-			path = Sources/crypto/ripemd;
+			path = ripemd;
 			sourceTree = "<group>";
 		};
 		C5E8516C1E9C71A600E041AE /* Frameworks */ = {
@@ -665,6 +658,7 @@
 				C50EC9111E9F698B00B7EF94 /* SHA2.swift in Sources */,
 				C50EC9101E9F698B00B7EF94 /* SHA1.swift in Sources */,
 				C50EC8E21E9F698B00B7EF94 /* BlockMode.swift in Sources */,
+				C5C2A9CE1EA76D3A0056D626 /* BTCProtocol.swift in Sources */,
 				C50EC9141E9F698B00B7EF94 /* UInt16+Extension.swift in Sources */,
 				C50EC90C1E9F698B00B7EF94 /* Rabbit.swift in Sources */,
 				C50EC8EB1E9F698B00B7EF94 /* RandomAccessBlockModeWorker.swift in Sources */,
@@ -676,13 +670,12 @@
 				C50EC9021E9F698B00B7EF94 /* IntegerConvertible.swift in Sources */,
 				C50EC9171E9F698B00B7EF94 /* UInt8+Extension.swift in Sources */,
 				C50EC9031E9F698B00B7EF94 /* MD5.swift in Sources */,
-				C5D5C36C1EA4A8D1002CEF7B /* RIPEMD+Block.swift in Sources */,
 				C50EC8FF1E9F698B00B7EF94 /* HMAC.swift in Sources */,
 				C50EC8F21E9F698B00B7EF94 /* CSArrayType+Extensions.swift in Sources */,
-				C5D5C36E1EA4A8D1002CEF7B /* RIPEMD.swift in Sources */,
 				C50EC9041E9F698B00B7EF94 /* NoPadding.swift in Sources */,
 				C50EC8E91E9F698B00B7EF94 /* OFB.swift in Sources */,
 				C50EC9071E9F698B00B7EF94 /* PBKDF1.swift in Sources */,
+				C5D4B29D1EA5A6C800163616 /* RIPEMD+Block.swift in Sources */,
 				C50EC8E51E9F698B00B7EF94 /* CBC.swift in Sources */,
 				C50EC8E31E9F698B00B7EF94 /* BlockModeOptions.swift in Sources */,
 				C50EC90E1E9F698B00B7EF94 /* RandomBytesSequence.swift in Sources */,
@@ -703,6 +696,7 @@
 				C50EC8E81E9F698B00B7EF94 /* ECB.swift in Sources */,
 				C50EC9061E9F698B00B7EF94 /* Padding.swift in Sources */,
 				C50EC8E71E9F698B00B7EF94 /* CTR.swift in Sources */,
+				C5D4B29E1EA5A6C800163616 /* RIPEMD.swift in Sources */,
 				C50EC8DD1E9F698B00B7EF94 /* Array+Extension.swift in Sources */,
 				C5294E831E98C96C00160E3E /* BTCKey.swift in Sources */,
 				C50EC8F71E9F698B00B7EF94 /* ChaCha20+Foundation.swift in Sources */,
@@ -745,9 +739,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				C553C9871E9CD5AF00EDD787 /* Data+BitcoinSwift.swift in Sources */,
-				C5D5C36D1EA4A8D1002CEF7B /* RIPEMD+Block.swift in Sources */,
-				C5D5C36F1EA4A8D1002CEF7B /* RIPEMD.swift in Sources */,
 				C5365CD01E9F7561002F15F3 /* BTCEnvConfig.swift in Sources */,
+				C5C2A9CF1EA76D3A0056D626 /* BTCProtocol.swift in Sources */,
 				C553C98A1E9CE96100EDD787 /* BTCError.swift in Sources */,
 				C55AB07B1E9A2A8C00E71165 /* BTCKey.swift in Sources */,
 				C5365CC81E9F6F8B002F15F3 /* BTCBase58.swift in Sources */,

@@ -12,6 +12,8 @@ import Foundation
 /// 地址协议
 public protocol BTCAddress {
     
+    /// 公钥压缩，比特币公钥支持压缩，只要初始化私钥地址时候才用到
+    var compressed: Bool {set get}
     
     /// 地址类型前序
     var versionPrefix: UInt8 {get}
@@ -38,7 +40,6 @@ public protocol BTCAddress {
     /// - Parameter data: 字节
     mutating func address(data: Data)
     
-    
     /// 清空数据
     mutating func clear()
     
@@ -64,6 +65,10 @@ extension BTCAddress {
         var data = Data()
         data.append(self.versionPrefix)     //添加地址类型
         data.append(payload)              //添加数据负载
+        //添加压缩标识
+        if self.compressed && self is BTCPrivateKeyAddress {    //私钥地址才允许压缩
+            data.append(0x01)
+        }
         data.addChecksum()                  //添加完整性校验
         let base58 = data.base58
         data.removeAll()                    //清除以防内存溢出
@@ -101,12 +106,7 @@ extension BTCAddress {
         
         let payload = Array(bytes.prefix(bytes.count - 4))
         let checksum = Array(bytes.suffix(4))
-        
-        //检查地址是否符合规范的长度，version占1字节
-        if payload.count != self.length + 1 {
-            self.clear()
-            return
-        }
+    
         
         //检查地址完整性
         let payloadhash4bytes = Array(payload.sha256().sha256().prefix(4))
@@ -115,7 +115,7 @@ extension BTCAddress {
             return
         }
         
-        self.data = Data(bytes: payload.suffix(from: 1))
+        self.data = Data(bytes: payload.suffix(from: 1))    //砍掉头字节
     }
     
     
@@ -137,14 +137,18 @@ extension BTCAddress {
 /// 公钥地址
 public struct BTCPublickeyAddress: BTCAddress {
     
+    /// 公钥压缩，比特币公钥支持压缩，只要初始化私钥地址时候才用到
+    public var compressed: Bool = false
+
+    
     /// 公钥地址长度
     public var length: Int {
-        return 20
+        return self.network.publicKeyLength
     }
 
     /// 地址版本前缀，正式0x00，测试0x6f
     public var versionPrefix: UInt8 {
-        return self.network == .main ? 0x00 : 0x6f
+        return self.network.publicKeyVer
     }
 
     public var data: Data?
@@ -155,7 +159,10 @@ public struct BTCPublickeyAddress: BTCAddress {
         if self.data == nil {
             throw BTCError.initError("data is nil")
         }
-        
+        //检查地址是否符合规范的长度，version占1字节
+        if self.data?.count != self.length {
+            throw BTCError.initError("data is nil")
+        }
     }
     
     /// 使用字节流初始化地址
@@ -170,6 +177,7 @@ public struct BTCPublickeyAddress: BTCAddress {
 }
 
 
+/// 私钥地址
 public struct BTCPrivateKeyAddress: BTCAddress {
     
     
@@ -183,12 +191,12 @@ public struct BTCPrivateKeyAddress: BTCAddress {
     
     /// 公钥地址长度
     public var length: Int {
-        return 32
+        return self.network.privateKeyLength
     }
     
     /// 地址版本前缀，正式0x00，测试0x6f
     public var versionPrefix: UInt8 {
-        return self.network == .main ? 0x80 : 0xef
+        return self.network.privateKeyVer
     }
     
     public var data: Data?
@@ -201,7 +209,7 @@ public struct BTCPrivateKeyAddress: BTCAddress {
         }
         
         //如果负载数据长度被标准长2字节，就是压缩格式(前序类型占1字节，后续压缩占1字节)
-        if self.data?.count == self.length + 2 {
+        if self.data?.count == self.length + 1 {
             self.compressed = true      //记录为压缩类型
             self.data?.removeLast()     //丢弃最后压缩字节
         }

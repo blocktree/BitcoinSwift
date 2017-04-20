@@ -77,6 +77,19 @@ extension String {
         return RIPEMD.digest(data).hex
     }
     
+    
+    /// 格式化为比特币消息认证格式
+    ///
+    /// - Returns: 以 "Bitcoin Signed Message:\n" 协议开头的变长字节结构
+    public func formatMessageForBitcoinSigning() -> Data {
+        var data = Data()
+        data.appendVarString(value: BTCEnvConfig.network.signedMessageHeader)
+        data.appendVarString(value: self)
+        return data
+    }
+    
+    
+    
 }
 
 

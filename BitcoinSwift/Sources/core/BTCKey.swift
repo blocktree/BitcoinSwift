@@ -68,10 +68,11 @@ public class BTCKey {
     /// 使用私钥初始化对象
     /// 私钥初始的对象拥有所有功能，签名，校验，生产公钥等等
     /// - Parameter privateKey: 私钥字节
-    public init?(privateKey: Data) {
+    public init?(privateKey: Data, compressed: Bool = false) {
         guard self.setPrivateKey(key: privateKey) else {
             return nil
         }
+        self.publicKeyCompressed = compressed
         guard self.generatePublickey(privateKeyData: privateKey) else {
             return nil
         }
@@ -84,6 +85,59 @@ public class BTCKey {
         guard self.setPublicKey(key: publicKey) else {
             return nil
         }
+    }
+    
+    /// 使用消息签名和消息（hash）还原公钥
+    public init?(compactSig: Data, message: String) {
+        
+        let msghash = message.formatMessageForBitcoinSigning().sha256().sha256()
+        
+        guard compactSig.count == 65 else {
+            return nil
+        }
+        
+        //头字节计算 - 27 大于 4 代表为压缩公钥
+        self.publicKeyCompressed = compactSig.bytes[0] - 27 >= 4 ? true : false
+        
+        var len = self.publicKeyLength
+        var recid: Int32 = Int32((compactSig.bytes[0] - 27) % 4)
+        
+        //输出目标，len个字节长度
+        var pubkey = UnsafeMutablePointer<UInt8>.allocate(capacity: len)
+        var pk = UnsafeMutablePointer<secp256k1_pubkey>.allocate(capacity: 1)
+        var s = UnsafeMutablePointer<secp256k1_ecdsa_recoverable_signature>.allocate(capacity: 1)
+        
+        //记得释放内存
+        defer {
+            pk.deinitialize(count: 1)
+            pk.deallocate(capacity: 1)
+            
+            s.deinitialize(count: 1)
+            s.deallocate(capacity: 1)
+            
+            pubkey.deinitialize(count: len)
+            pubkey.deallocate(capacity: len)
+        }
+        
+        let secp256k1_ec_compressed = self.publicKeyCompressed ? SECP256K1_EC_COMPRESSED : SECP256K1_EC_UNCOMPRESSED
+        
+        //解码出签名结构体，compactSig向前移一位，跳过recid字节
+        guard secp256k1_ecdsa_recoverable_signature_parse_compact(self.ctx, s, compactSig.advanced(by: 1).u8, recid) > 0 else {
+            return nil
+        }
+        
+        //通过消息签名和消息原文双hash恢复公钥结构
+        guard secp256k1_ecdsa_recover(self.ctx, pk, s, msghash.u8) > 0 else {
+            return nil
+        }
+        //print("pk = \(pk.pointee.data)")
+        //编码公钥
+        guard secp256k1_ec_pubkey_serialize(self.ctx, pubkey, &len, pk, UInt32(secp256k1_ec_compressed)) > 0 else {
+            return nil
+        }
+        
+        self.publicKey = Data(bytes: pubkey, count: len)
+        
     }
     
     
@@ -170,7 +224,7 @@ public class BTCKey {
         
         //print(pk.pointee.data)
         
-        let secp256k1_ec_compressed = self.publicKeyCompressed ? (SECP256K1_FLAGS_TYPE_COMPRESSION | SECP256K1_FLAGS_BIT_COMPRESSION) : SECP256K1_FLAGS_TYPE_COMPRESSION
+        let secp256k1_ec_compressed = self.publicKeyCompressed ? SECP256K1_EC_COMPRESSED : SECP256K1_EC_UNCOMPRESSED
         
         //导出公钥字节压缩，结果1就代表成功
         guard secp256k1_ec_pubkey_serialize(self.ctx, data, &len, pk, UInt32(secp256k1_ec_compressed)) > 0 else {
@@ -215,23 +269,11 @@ extension BTCKey {
     
     ///WIF格式编码私钥（钱包导入格式——WIF，Wallet Import Format），如果key不是私钥则返回空串
     public var wif: String {
-        guard let key = self.seckey else {
+        guard let address = self.privateKeyAddress else {
             return ""
         }
-        
-        var d = Data(capacity: 34)
-        let version: UInt8 = 128
-        d.append(version)
-        d.append(key)
-        if self.publicKeyCompressed {
-            d.append(0x01)
-        }
-        
-        let checksum = d.sha256().sha256()
-        d.append(checksum.u8, count: 4)
-        
-        
-        return d.base58
+    
+        return address.string
     }
     
     
@@ -246,8 +288,128 @@ extension BTCKey {
     /// 地址，公钥的地址对象
     public var address: BTCPublickeyAddress? {
         let hash160 = self.publicKey.sha256().ripemd160()
-        let address = try! BTCPublickeyAddress(data: hash160)
+        let address = try? BTCPublickeyAddress(data: hash160)
         return address
     }
     
+    
+    /// 地址，公钥的地址对象，address一样
+    public var publicKeyAddress: BTCPublickeyAddress? {
+        return self.address    //直接返回address
+    }
+    
+    
+    /// 私钥对象
+    public var privateKeyAddress: BTCPrivateKeyAddress? {
+        guard let data = self.seckey else {
+            return nil
+        }
+        
+        let address = try? BTCPrivateKeyAddress(data: data, compressed: self.publicKeyCompressed)
+        return address
+    }
+    
+    
+    
+    func signature(for bytes: Data) -> Data? {
+        return nil
+    }
+    
+    
+    /// 生成消息认证签名
+    ///
+    /// - Parameter message: 消息
+    /// - Returns: 消息签名字节
+    func signature(for message: String) -> Data? {
+        let hash = message.formatMessageForBitcoinSigning().sha256().sha256()
+        let signature = self.compactSignature(for: hash)
+        return signature
+    }
+    
+    
+    /// 比特币消息认证签名算法
+    ///
+    /// 通过私钥生成消息的签名，可以通过”地址“ + ”消息原文“ + ”消息签名“ 校验是否一致
+    /// The format is one header byte, followed by two times 32 bytes for the serialized r and s values.
+    /// The header byte: 0x1B = first key with even y, 0x1C = first key with odd y,
+    ///                  0x1D = second key with even y, 0x1E = second key with odd y,
+    ///                  add 0x04 for compressed keys.
+    /// - Parameter hash: 消息的256位hash，32字节
+    /// - Returns: 返回一个65字节压缩的消息签名字节
+    func compactSignature(for hash: Data) -> Data? {
+        //print("hash = \(hash.hex)")
+        var signature: Data?
+        
+        guard let key = self.seckey else {
+            return nil
+        }
+        
+        var len = 65
+        var sig = UnsafeMutablePointer<UInt8>.allocate(capacity: len)
+        sig.initialize(to: 0, count: len)    //初始全为0
+        var s = UnsafeMutablePointer<secp256k1_ecdsa_recoverable_signature>.allocate(capacity: 1)
+        var recid: Int32 = 0
+        
+        //记得释放内存
+        defer {
+            s.deinitialize(count: 1)
+            s.deallocate(capacity: 1)
+            
+            sig.deinitialize(count: len)
+            sig.deallocate(capacity: len)
+        }
+        
+        //生成签名
+        guard secp256k1_ecdsa_sign_recoverable(self.ctx, s, hash.u8, key.u8, secp256k1_nonce_function_rfc6979, nil) > 0 else {
+            return nil
+        }
+        //编码签名字节
+        guard secp256k1_ecdsa_recoverable_signature_serialize_compact(self.ctx, sig.advanced(by: 1), &recid, s) > 0 else {
+            return nil
+        }
+        
+        //第一个字节记录ID
+        sig.pointee = UInt8(27 + Int(recid) + (self.publicKeyCompressed ? 4 : 0))
+        signature = Data(bytes: sig, count: len)
+
+        return signature
+        
+    }
+    
+    
+    func sign(data: Data) -> Data? {
+        
+        var signature: Data?
+        
+        guard let key = self.seckey else {
+            return nil
+        }
+        
+        var len = 72
+        var sig = UnsafeMutablePointer<UInt8>.allocate(capacity: len)
+        var s = UnsafeMutablePointer<secp256k1_ecdsa_signature>.allocate(capacity: 1)
+        
+        //记得释放内存
+        defer {
+            s.deinitialize(count: 1)
+            s.deallocate(capacity: 1)
+            
+            sig.deinitialize(count: len)
+            sig.deallocate(capacity: len)
+        }
+        
+        //签名
+        guard secp256k1_ecdsa_sign(self.ctx, s, data.u8, key.u8, secp256k1_nonce_function_rfc6979, nil) > 0 else {
+            return nil
+        }
+        
+        //编码
+        guard secp256k1_ecdsa_signature_serialize_der(self.ctx, sig, &len, s) > 0 else {
+            return nil
+        }
+        
+        signature = Data(bytes: sig, count: len)
+        
+        return signature
+    }
 }
