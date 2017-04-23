@@ -103,7 +103,7 @@ class BTCKey_Tests: XCTestCase {
             }
             print("input: address = \(key.address!.string)")
             print("input: message = \(message)")
-            print("output: base64 = \(signature.base64EncodedString())")
+            print("output: base64 = \(signature.hex)")
             XCTAssert("HCFFin9nZaSKr57I5+UVrEwkYIYHrk8x/QPjuumWrFUTUrf0xzzF7Rx3x6FVEA1ABYXTmCrEpslJMn/smAL1My0=" == signature.base64EncodedString(), "signature not correct")
             
             //恢复公钥s
@@ -113,7 +113,23 @@ class BTCKey_Tests: XCTestCase {
             }
             print("output: recovery publickey = \(publicKey.address!.string)")
             XCTAssert(publicKey.publicKeyAddress?.string == key.address?.string, "publickey not same as the sign key")
+            
+            let result = key.isValid(signature: signature, message: message)
+            XCTAssert(result, "Valid Signature and message failed")
         }
+        
+    }
+    
+    
+    /// 测试验证比特币消息认证功能
+    func testVerifyBitcoinSignedMessage() {
+//        let signature = "1c21458a7f6765a48aaf9ec8e7e515ac4c24608607ae4f31fd03e3bae996ac551352b7f4c73cc5ed1c77c7a155100d400585d3982ac4a6c949327fec9802f5332d".hexData!
+//        let message = "My name is Chance, and I am a bitcoinSwift developer."
+//        guard let publickey = BTCKey.verify(signature: signature, message: message) else {
+//            XCTAssert(false, "Valid Signature and message failed")
+//            return
+//        }
+        
         
     }
     

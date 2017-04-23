@@ -311,7 +311,7 @@ extension BTCKey {
     
     
     
-    func signature(for bytes: Data) -> Data? {
+    public func signature(for bytes: Data) -> Data? {
         return nil
     }
     
@@ -320,7 +320,7 @@ extension BTCKey {
     ///
     /// - Parameter message: 消息
     /// - Returns: 消息签名字节
-    func signature(for message: String) -> Data? {
+    public func signature(for message: String) -> Data? {
         let hash = message.formatMessageForBitcoinSigning().sha256().sha256()
         let signature = self.compactSignature(for: hash)
         return signature
@@ -336,7 +336,7 @@ extension BTCKey {
     ///                  add 0x04 for compressed keys.
     /// - Parameter hash: 消息的256位hash，32字节
     /// - Returns: 返回一个65字节压缩的消息签名字节
-    func compactSignature(for hash: Data) -> Data? {
+    public func compactSignature(for hash: Data) -> Data? {
         //print("hash = \(hash.hex)")
         var signature: Data?
         
@@ -375,9 +375,32 @@ extension BTCKey {
         return signature
         
     }
+
+    
+    /// 验证 签名 与 消息 是否一致
+    /// 一致则返回一个公钥对象
+    /// - Parameters:
+    ///   - signature: 签名字节
+    ///   - message: 消息原文
+    /// - Returns: 签名私钥导出的公钥
+    public class func verify(signature: Data, message: String) -> BTCKey? {
+        let key = BTCKey(compactSig: signature, message: message)
+        return key
+    }
     
     
-    func sign(data: Data) -> Data? {
+    /// 验证消息签名和消息原文的一致性
+    ///
+    /// - Parameters:
+    ///   - signature: 签名字节
+    ///   - message: 消息原文
+    /// - Returns: 验证结果
+    public func isValid(signature: Data, message: String) -> Bool {
+        let key = BTCKey(compactSig: signature, message: message)
+        return key?.publicKey == self.publicKey ? true : false
+    }
+    
+    public func sign(data: Data) -> Data? {
         
         var signature: Data?
         
@@ -412,4 +435,37 @@ extension BTCKey {
         
         return signature
     }
+    
+
+    public func isValid(signature: Data, hash: Data) -> Bool {
+        
+        var pk = UnsafeMutablePointer<secp256k1_pubkey>.allocate(capacity: 1)
+        var s = UnsafeMutablePointer<secp256k1_ecdsa_signature>.allocate(capacity: 1)
+        
+        //记得释放内存
+        defer {
+            pk.deinitialize(count: 1)
+            pk.deallocate(capacity: 1)
+            
+            s.deinitialize(count: 1)
+            s.deallocate(capacity: 1)
+            
+        }
+        
+        guard secp256k1_ec_pubkey_parse(self.ctx, pk, self.publicKey.u8, self.publicKey.count) > 0 else {
+            return false
+        }
+        
+        guard secp256k1_ecdsa_signature_parse_der(self.ctx, s, signature.u8, signature.count) > 0 else {
+            return false
+        }
+        
+        guard secp256k1_ecdsa_verify(self.ctx, s, hash.u8, pk) > 0 else {
+            return false
+        }
+        
+        return true
+        
+    }
+    
 }
