@@ -35,6 +35,17 @@ public extension Data {
         return Array(self)
     }
     
+    /// 转为16位数组指针
+    public var u16: Array<UInt16> {
+        let values = Data.convert(length: self.count, data: self.u8, UInt16.self)
+        return values
+    }
+    
+    /// 转为32位数组指针
+    public var u32: Array<UInt32> {
+        let values = Data.convert(length: self.count, data: self.u8, UInt32.self)
+        return values
+    }
     
     /// 字节base58编码
     public var base58: String {
@@ -44,6 +55,9 @@ public extension Data {
         
         return BTCBase58.encode(with: self)
     }
+    
+    
+    
     
     
     /// 添加完整性校验
@@ -90,17 +104,17 @@ public extension Data {
             self.append(UInt8(value))
         } else if value <= 0xffff {
             self.append(0xfd)
-            var compactValue: UInt16 = CFSwapInt16HostToLittle(UInt16(value))
+            var compactValue: UInt16 = UInt16(value).littleEndian
             let compactData = Data(bytes: &compactValue, count: MemoryLayout<UInt16>.stride)
             self.append(compactData)
         } else if value <= 0xffffffff {
             self.append(0xfe)
-            var compactValue: UInt32 = CFSwapInt32HostToLittle(UInt32(value))
+            var compactValue: UInt32 = UInt32(value).littleEndian
             let compactData = Data(bytes: &compactValue, count: MemoryLayout<UInt32>.stride)
             self.append(compactData)
         } else {
             self.append(0xff)
-            var compactValue: UInt64 = CFSwapInt64HostToLittle(UInt64(value))
+            var compactValue: UInt64 = UInt64(value).littleEndian
             let compactData = Data(bytes: &compactValue, count: MemoryLayout<UInt64>.stride)
             self.append(compactData)
         }
@@ -125,6 +139,39 @@ public extension Data {
         self.append(strData)
 
     }
+    
+    
+    
+    /// 在字节流中读取某个指针某个位置若干个字节绑定到类型上
+    ///
+    /// - Parameters:
+    ///   - offset: 指针起始位
+    ///   - count: 读取类型的数量
+    ///   - _: 类型
+    /// - Returns: 转换后的类型数组
+    public func get<T>(at offset: Int, count: Int = 1, _: T.Type) -> [T]? {
+        
+        guard offset < self.count else {
+            return nil
+        }
+        
+        let length = MemoryLayout<T>.stride * count
+        let ptr = UnsafeMutablePointer<UInt8>.allocate(capacity: length)
+        //记得释放内存
+        defer {
+            ptr.deinitialize(count: length)
+            ptr.deallocate(capacity: length)
+        }
+        
+        let start = self.advanced(by: offset)
+        
+        guard length <= start.count else {
+            return nil
+        }
+        start.copyBytes(to: ptr, count: length)
+        let result = Data.convert(length: length, data: ptr, T.self)
+        return result
+    }
 }
 
 
@@ -143,6 +190,7 @@ public extension Data {
         let buffer = data.withMemoryRebound(to: T.self, capacity: numItems) {
             UnsafeBufferPointer(start: $0, count: numItems)
         }
+        
         return Array(buffer)
     }
     

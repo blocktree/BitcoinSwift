@@ -436,7 +436,8 @@ extension BTCKey {
         return signature
     }
     
-
+    /// 校验签名数据
+    ///
     public func isValid(signature: Data, hash: Data) -> Bool {
         
         var pk = UnsafeMutablePointer<secp256k1_pubkey>.allocate(capacity: 1)

@@ -13,10 +13,11 @@ import Libsecp256k1
 var str = "Hello, playground"
 
 let data = str.data(using: String.Encoding.utf8)!
+//let u32: [UInt32] = data.get(at: 0, UInt32.self)!
 let u8: [UInt8] = [UInt8](data)
 let newData = Data(bytes: u8)
 let newStr = String(data: newData, encoding: String.Encoding.utf8)
-let size = MemoryLayout<UInt64>.size
+let size = MemoryLayout<UInt32>.size
 
 let nextnew = data.advanced(by: 1).u8
 
@@ -37,3 +38,9 @@ let uncompression = SECP256K1_FLAGS_TYPE_COMPRESSION
 
 let com = SECP256K1_EC_COMPRESSED
 let uncom = SECP256K1_EC_UNCOMPRESSED
+
+let rro = 123443.556456546.rounded()
+
+let compactValue: UInt16 = CFSwapInt16HostToBig(UInt16(2345))
+
+let compactValue2: Int16 = Int16(2345).bigEndian

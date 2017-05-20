@@ -56,6 +56,18 @@ public enum BTCEnv {
     var signedMessageHeader: String {
         return "Bitcoin Signed Message:\n"
     }
+    
+    
+    /// 比特币网络标准端口
+    var bitcoinStandardPort: UInt16 {
+        switch self {
+        case .main:
+            return 8333
+        case .test:
+            return 18333
+        }
+    }
+    
 }
 
 
