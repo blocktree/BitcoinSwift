@@ -83,7 +83,7 @@ extension String {
     /// - Returns: 以 "Bitcoin Signed Message:\n" 协议开头的变长字节结构
     public func formatMessageForBitcoinSigning() -> Data {
         var data = Data()
-        data.appendVarString(value: BTCEnvConfig.network.signedMessageHeader)
+        data.appendVarString(value: BTCNodeConfig.shared.network.signedMessageHeader)
         data.appendVarString(value: self)
         return data
     }
@@ -100,7 +100,7 @@ public extension Character {
     /// 字母转为Unicode的数值
     ///
     /// - Returns: Unicode的数值
-    func toInt() -> Int {
+    public func toInt() -> Int {
         var intFromCharacter:Int = 0
         for scalar in String(self).unicodeScalars {
             intFromCharacter = Int(scalar.value)

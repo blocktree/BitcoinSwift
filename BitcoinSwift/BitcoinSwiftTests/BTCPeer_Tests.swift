@@ -12,9 +12,9 @@ import XCTest
 class BTCPeer_Tests: XCTestCase {
     
     let QUIT: String = "QUIT"
-    let port: Int32 = 1337
-    //	let host: String = "::ffff:7f00:0001"
-    let host: String = "127.0.0.1"
+    let port: Int32 = 8333
+    //    let host: String = "::ffff:7f00:0001"
+    let host: String = "73.243.216.34"
     let path: String = "/tmp/server.test.socket"
     
     override func setUp() {
@@ -27,9 +27,39 @@ class BTCPeer_Tests: XCTestCase {
         super.tearDown()
     }
     
-    func testPeerConnect() {
+    
+    /// 测试地址转换host
+    func testAddressToHost() {
         
+        do {
+            //测试 ipv4
+            let u128: [UInt32] = [UInt32(bigEndian: 0x00),
+                                  UInt32(bigEndian: 0x00),
+                                  UInt32(bigEndian: 0x0000ffff),
+                                  UInt32(bigEndian: 0x49f3d822)]
+            let address = UInt128(u128)
+            let peer = BTCPeer(address: address, port: port)
+            print("host = \(peer.host)")
+            XCTAssert("73.243.216.34" == peer.host, "error host = \(peer.host)")
+        }
+        
+        do {
+            let u128: [UInt32] = [UInt32(bigEndian: 0x20010db8),
+                                  UInt32(bigEndian: 0x85a308d3),
+                                  UInt32(bigEndian: 0x13198a2e),
+                                  UInt32(bigEndian: 0x03707344)]
+            let address = UInt128(u128)
+            let peer = BTCPeer(address: address, port: port)
+            print("host = \(peer.host)")
+            XCTAssert("2001:db8:85a3:8d3:1319:8a2e:370:7344" == peer.host, "error host = \(peer.host)")
+        }
     }
+    
+    //    func testPeerConnect() {
+    //        let peer = BTCPeer(host: self.host, port: port)
+    //        peer.host = self.host
+    //        //peer.connect()
+    //    }
     
     
     //运行一个接收监听的服务端
@@ -170,5 +200,5 @@ class BTCPeer_Tests: XCTestCase {
             XCTFail()
         }
     }
-
+    
 }

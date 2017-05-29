@@ -14,10 +14,11 @@ var str = "Hello, playground"
 
 let data = str.data(using: String.Encoding.utf8)!
 //let u32: [UInt32] = data.get(at: 0, UInt32.self)!
+let subdata = Data(data.prefix(4))
 let u8: [UInt8] = [UInt8](data)
 let newData = Data(bytes: u8)
 let newStr = String(data: newData, encoding: String.Encoding.utf8)
-let size = MemoryLayout<UInt32>.size
+let size = MemoryLayout<Int8>.stride
 
 let nextnew = data.advanced(by: 1).u8
 
@@ -44,3 +45,33 @@ let rro = 123443.556456546.rounded()
 let compactValue: UInt16 = CFSwapInt16HostToBig(UInt16(2345))
 
 let compactValue2: Int16 = Int16(2345).bigEndian
+
+var decodeData = str.data(using: String.Encoding.utf8)!
+print(decodeData.hex)
+decodeData.count = 0
+
+print(decodeData.hex)
+
+/////地址
+let port: Int32 = 8333
+let host: String = "::ffff:7f00:0001"
+//    let host: String = "73.243.216.34"
+var info: UnsafeMutablePointer<addrinfo>?
+// Retrieve the info on our target...
+var status: Int32 = getaddrinfo(host, String(port), nil, &info)
+
+// Defer cleanup of our target info...
+defer {
+    
+    if info != nil {
+        freeaddrinfo(info)
+    }
+}
+var addressdata = Data()
+addressdata.append(info!.pointee.ai_addr)
+print("addressdata = \(addressdata.hex)")
+
+let u64 = UInt64(bigEndian: 0x1122334455667788)
+let left8 = u64 >> 8
+let uin8 = left8 & UInt64(0xff)
+let uinn = UInt8(uin8)

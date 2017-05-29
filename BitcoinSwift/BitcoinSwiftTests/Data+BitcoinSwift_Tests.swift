@@ -41,4 +41,14 @@ class Data_BitcoinSwift_Tests: XCTestCase {
         }
     }
     
+    func testAppendUInt() {
+        var data = Data()
+        let value: UInt32 = 12346
+        data.append(value)
+        print("\(value).littleEndian = \(value.littleEndian)")
+        print("\(value).bigEndian = \(value.bigEndian)")
+        print("\(value).hex = \(data.hex)")
+        
+    }
+    
 }

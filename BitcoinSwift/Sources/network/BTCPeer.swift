@@ -6,6 +6,12 @@
 //
 //
 
+#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+    import Darwin
+#elseif os(Linux)
+    import Glibc
+#endif
+
 import Foundation
 
 
@@ -28,16 +34,45 @@ public class BTCPeer {
     //MARK: - 成员变量
     
     public var status: BTCPeerStatus = .disconnected
-//    public var address: Data = Data(repeating: 0, count: 16)    //128位地址
+    public var address: UInt128                         //128位，ipv6格式地址
     public var port: Int32 = 0
     public var version: UInt32 = 0
-    public var host: String = ""
     public var peerSocket: Socket? = nil
+    
+    //计算host名，ipv4: 255.255.255.255，ipv6：2001:0db8:85a3:08d3:1319:8a2e:0370:7344
+    public var host: String {
+        
+        var bufLen: Int = 0
+        var buf: [CChar]
+        
+        //ipv4
+        if self.address.u64[0] == 0 && self.address.u16[5] == 0xffff {
+            bufLen = Int(INET_ADDRSTRLEN)
+            buf = [CChar](repeating: 0, count: bufLen)
+            let sin_addr = [self.address.u32[3]]
+            inet_ntop(AF_INET, sin_addr, &buf, socklen_t(bufLen))
+        }
+        //ipv6
+        else {
+            
+            bufLen = Int(INET6_ADDRSTRLEN)
+            buf = [CChar](repeating: 0, count: bufLen)
+            inet_ntop(AF_INET6, self.address.u8, &buf, socklen_t(bufLen))
+        }
+        
+        if let s = String(validatingUTF8: buf) {
+            return s
+        } else {
+            return ""
+        }
+        
+    }
+    
     
     //MARK: - 初始化方法
     
-    public init(host: String, port: Int32) {
-        self.host = host
+    public init(address: UInt128, port: Int32) {
+        self.address = address
         self.port = port
     }
     
@@ -117,6 +152,11 @@ public class BTCPeer {
                     let bytesRead = try socket.read(into: &readData)
                     
                     if bytesRead > 0 {
+                        
+                        let messages = try BTCMessageHandler.decodeMessage(readData: readData)
+                        
+                        print("messages = \(messages)")
+                        
                         guard let response = String(data: readData, encoding: .utf8) else {
                             
                             print("Error decoding response...")
@@ -158,7 +198,45 @@ public class BTCPeer {
     }
     
     
-    //TODO 消息接收
     
-    //TODO 消息解析
+    //MARK: - 消息发送
+    func sendMessage(message: Data) {
+        
+    }
+    
+    func sendVersionMessage() {
+        
+        var msg = Data()
+        
+        msg.append(BTCNodeConfig.shared.protocolVersion)
+        msg.append(BTCNodeConfig.shared.enableServices)
+        msg.append(UInt64(Date().timeIntervalSince1970))
+        msg.append(BTCNodeServices.node_network.rawValue | BTCNodeServices.node_bloom.rawValue)
+        
+        
+//
+//        NSMutableData *msg = [NSMutableData data];
+//        
+//        uint16_t port = CFSwapInt16HostToBig(self.port);
+//        
+//        [msg appendUInt32:PROTOCOL_VERSION]; // version
+//        [msg appendUInt64:ENABLED_SERVICES]; // services
+//        [msg appendUInt64:[NSDate timeIntervalSinceReferenceDate] + NSTimeIntervalSince1970]; // timestamp
+//        [msg appendUInt64:self.services]; // services of remote peer
+//        [msg appendBytes:&_address length:sizeof(_address)]; // IPv6 address of remote peer
+//        [msg appendBytes:&port length:sizeof(port)]; // port of remote peer
+//        [msg appendNetAddress:LOCAL_HOST port:BITCOIN_STANDARD_PORT services:ENABLED_SERVICES]; // net address of local peer
+//        self.localNonce = ((uint64_t)arc4random() << 32) | (uint64_t)arc4random(); // random nonce
+//        [msg appendUInt64:self.localNonce];
+//        [msg appendString:USER_AGENT]; // user agent
+//        [msg appendUInt32:0]; // last block received
+//        [msg appendUInt8:0]; // relay transactions (no for SPV bloom filter mode)
+//        self.pingStartTime = [NSDate timeIntervalSinceReferenceDate];
+//        [self sendMessage:msg type:MSG_VERSION];
+        
+    }
+    
+    
+    
+    //TODO 消息接收
 }

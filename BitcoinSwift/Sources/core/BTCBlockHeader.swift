@@ -136,15 +136,15 @@ public struct BTCBlockHeader {
         
         var data = Data()
         var version = self.version.littleEndian
-        data.append(Data(bytes: &version, count: MemoryLayout<UInt32>.stride))
+        data.append(Data(bytes: &version, count: MemoryLayout<UInt32>.size))
         data.append(self.previousBlockHash)
         data.append(self.merkleRootHash)
         var time = self.time.littleEndian
-        data.append(Data(bytes: &time, count: MemoryLayout<UInt32>.stride))
+        data.append(Data(bytes: &time, count: MemoryLayout<UInt32>.size))
         var target = self.difficultyTarget.littleEndian
-        data.append(Data(bytes: &target, count: MemoryLayout<UInt32>.stride))
+        data.append(Data(bytes: &target, count: MemoryLayout<UInt32>.size))
         var nonce = self.nonce.littleEndian
-        data.append(Data(bytes: &nonce, count: MemoryLayout<UInt32>.stride))
+        data.append(Data(bytes: &nonce, count: MemoryLayout<UInt32>.size))
         
         return data;
     }

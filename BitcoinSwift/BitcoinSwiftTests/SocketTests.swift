@@ -32,8 +32,8 @@ class SocketTests: XCTestCase {
 	
 	let QUIT: String = "QUIT"
 	let port: Int32 = 1337
-//	let host: String = "::ffff:7f00:0001"
-	let host: String = "127.0.0.1"
+	let host: String = "::ffff:7f00:0001"
+//	let host: String = "127.0.0.1"
 	let path: String = "/tmp/server.test.socket"
 	
 	
@@ -144,9 +144,12 @@ class SocketTests: XCTestCase {
 			try socket.write(from: "Hello, type 'QUIT' to end session\n")
 			
 			var bytesRead = 0
+            
+            socket.readBufferSize = 1024
+            
 			repeat {
 				
-				var readData = Data()
+				var readData = Data(capacity: 1024)
 				bytesRead = try socket.read(into: &readData)
 				
 				if bytesRead > 0 {
@@ -864,6 +867,21 @@ class SocketTests: XCTestCase {
 			XCTAssertTrue(socket2.isConnected)
 			
 			let address = socket2.signature?.address
+            
+            switch address! {
+                
+            case .ipv4(let address_in):
+                
+                print(address_in.sin_addr.s_addr)
+                
+            case .ipv6(let address_in):
+                
+                print(address_in.sin6_addr.__u6_addr.__u6_addr8)
+                
+            default:
+                return
+            }
+            
 			XCTAssertNotNil(address)
 			
 			let (theHost, thePort) = Socket.hostnameAndPort(from: address!)!
@@ -1089,9 +1107,12 @@ class SocketTests: XCTestCase {
 			XCTAssertNotNil(response)
 			XCTAssertEqual(response, "Server response: \n\(hello)\n")
             
-            for i in 0...100 {
-                try socket.write(from: "hi \(i)")
+            var longString = ""
+            for i in 0...2048 {
+                longString.append("+\(i)+")
             }
+            
+            try socket.write(from: longString)
 			
 			try socket.write(from: "QUIT")
 			

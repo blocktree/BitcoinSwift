@@ -28,7 +28,7 @@ public protocol BTCAddress {
     var string: String {get}
     
     /// 环境
-    var network: BTCEnv {get}
+    var network: BTCNetwork {get}
     
     /// 通过地址转为地址对象
     ///
@@ -52,8 +52,8 @@ extension BTCAddress {
     
     
     /// 网络环境
-    public var network: BTCEnv {
-        return BTCEnvConfig.network
+    public var network: BTCNetwork {
+        return BTCNodeConfig.shared.network
     }
     
     /// 输出base58编码格式地址
@@ -184,8 +184,8 @@ public struct BTCPrivateKeyAddress: BTCAddress {
     /// 公钥压缩，比特币公钥支持压缩
     public var compressed: Bool =  false
     
-    public var network: BTCEnv {
-        return BTCEnvConfig.network
+    public var network: BTCNetwork {
+        return BTCNodeConfig.shared.network
     }
     
     
