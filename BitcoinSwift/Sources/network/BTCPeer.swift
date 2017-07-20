@@ -39,7 +39,9 @@ public class BTCPeer {
     public var version: UInt32 = 0
     public var peerSocket: Socket? = nil
     
-    //计算host名，ipv4: 255.255.255.255，ipv6：2001:0db8:85a3:08d3:1319:8a2e:0370:7344
+    //计算host名，
+    //ipv4: 255.255.255.255，
+    //ipv6：2001:0db8:85a3:08d3:1319:8a2e:0370:7344
     public var host: String {
         
         var bufLen: Int = 0
